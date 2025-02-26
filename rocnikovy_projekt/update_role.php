@@ -1,0 +1,24 @@
+<?php
+session_start();
+include("db_connect.php");
+
+if (!isset($_SESSION['valid']) || $_SESSION['role'] != 'admin_for_users') {
+    header("Location: index.php");
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $user_id = $_POST['user_id'];
+    $role = $_POST['role'];
+
+    $sql = "UPDATE users SET role = ? WHERE Id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $role, $user_id);
+    $stmt->execute();
+
+    header("Location: admin_for_users.php");
+    exit();
+}
+
+$conn->close();
+?>
